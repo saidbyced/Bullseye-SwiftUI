@@ -13,6 +13,8 @@ struct ContentView: View {
     @State var alertIsVisible = false
     @State var sliderValue = 50.0
     @State var target = Int.random(in: 1...100)
+    @State var score = 0
+    @State var round = 1
     
     var body: some View {
         
@@ -36,16 +38,20 @@ struct ContentView: View {
                 
                 // Button row
                 Button(action: {
-                    print("Button pressed")
+                    print("Score points")
                     self.alertIsVisible = true
                 }) {
                     Text(/*@START_MENU_TOKEN@*/"Hit Me!"/*@END_MENU_TOKEN@*/)
                 }
                 .alert(isPresented: $alertIsVisible) { () -> Alert in
                     let sliderValueMessage = "The slider's value is \(roundedSliderValue())."
-                    let pointsScoredMessage = "You scored \(pointsForCurrentRound()) points this round."
+                    let pointsScoredMessage = "You scored \(self.pointsForCurrentRound()) points this round."
                     
-                    return Alert(title: Text("Hello there"), message: Text(sliderValueMessage + "\n" + pointsScoredMessage), dismissButton: .default(Text("Awesome!")))
+                    return Alert(title: Text("Hello there"), message: Text(sliderValueMessage + "\n" + pointsScoredMessage), dismissButton: .default(Text("Awesome!")) {
+                        self.addToScore()
+                        self.nextRound()
+                        self.randomizeTarget()
+                        })
                 }
                 Spacer()
                 
@@ -53,15 +59,16 @@ struct ContentView: View {
                 HStack {
                     Button(action: {
                         print("Resetting game")
+                        self.resetEverything()
                     }) {
                         Text("Start Over")
                     }
                     Spacer()
                     Text("Score:")
-                    Text("999999")
+                    Text(String(score))
                     Spacer()
                     Text("Round:")
-                    Text("999")
+                    Text(String(round))
                     Spacer()
                     Button(action: {
                         print("Pop-up some info")
@@ -80,7 +87,25 @@ struct ContentView: View {
     }
     
     func pointsForCurrentRound() -> Int {
-        100 - abs(target - roundedSliderValue())
+        return 100 - abs(target - roundedSliderValue())
+    }
+    
+    func addToScore() {
+        score += pointsForCurrentRound()
+    }
+    
+    func nextRound() {
+        round += 1
+    }
+    
+    func randomizeTarget() {
+        target = Int.random(in: 1...100)
+    }
+    
+    func resetEverything() {
+        score = 0
+        round = 0
+        randomizeTarget()
     }
 }
 

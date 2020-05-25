@@ -16,6 +16,56 @@ struct ContentView: View {
     @State var score = 0
     @State var round = 1
     
+    struct Shadow: ViewModifier {
+        func body(content: Content) -> some View {
+            return content
+                .shadow(color: Color.black, radius: 5, x: 2, y: 2)
+        }
+            
+    }
+    
+    struct LabelStyle: ViewModifier {
+        func body(content: Content) -> some View {
+            return content
+                .foregroundColor(Color.white)
+                .modifier(Shadow())
+                .font(Font.custom("ArialRoundedMTBold", size: 18))
+        }
+            
+    }
+    
+    struct ValueStyle: ViewModifier {
+        func body(content: Content) -> some View {
+            return content.modifier(LabelStyle())
+                .foregroundColor(Color.yellow)
+                .modifier(Shadow())
+                .font(Font.custom("ArialRoundedMTBold", size: 24))
+        }
+    }
+    
+    struct ButtonStyle: ViewModifier {
+        func body(content: Content) -> some View {
+            return content
+                .background(Image("Button")).modifier(Shadow())
+        }
+    }
+    
+    struct ButtonLargeTextStyle: ViewModifier {
+        func body(content: Content) -> some View {
+            return content
+                .foregroundColor(Color.black)
+                .font(Font.custom("ArialRoundedMTBold", size: 24))
+        }
+    }
+    
+    struct ButtonSmallTextStyle: ViewModifier {
+        func body(content: Content) -> some View {
+            return content
+                .foregroundColor(Color.black)
+                .font(Font.custom("ArialRoundedMTBold", size: 18))
+        }
+    }
+    
     var body: some View {
         
         VStack {
@@ -23,16 +73,16 @@ struct ContentView: View {
                 Spacer()
                 // Target Row
                 HStack {
-                    Text("Put the bullseye as close as you can to:")
-                    Text(String(target))
+                    Text("Put the bullseye as close as you can to:").modifier(LabelStyle())
+                    Text(String(target)).modifier(ValueStyle())
                 }
                 Spacer()
                 
                 // Slider row
                 HStack {
-                    Text("1")
+                    Text("1").modifier(LabelStyle())
                     Slider(value: $sliderValue, in: 1...100)
-                    Text("100")
+                    Text("100").modifier(LabelStyle())
                 }
                 Spacer()
                 
@@ -41,7 +91,7 @@ struct ContentView: View {
                     print("Score points")
                     self.alertIsVisible = true
                 }) {
-                    Text(/*@START_MENU_TOKEN@*/"Hit Me!"/*@END_MENU_TOKEN@*/)
+                    Text(/*@START_MENU_TOKEN@*/"Hit Me!"/*@END_MENU_TOKEN@*/).background(Image("Button")).modifier(Shadow())
                 }
                 .alert(isPresented: $alertIsVisible) { () -> Alert in
                     let sliderValueMessage = "The slider's value is \(roundedSliderValue())."
@@ -53,6 +103,7 @@ struct ContentView: View {
                         self.randomizeTarget()
                         })
                 }
+                    .background(Image("Button")).modifier(Shadow())
                 Spacer()
                 
                 // Score row
@@ -61,24 +112,29 @@ struct ContentView: View {
                         print("Resetting game")
                         self.resetEverything()
                     }) {
-                        Text("Start Over")
+                        HStack {
+                            Image("StartOverIcon")
+                            Text("Start Over").modifier(ButtonSmallTextStyle())
+                        }
                     }
+                        .background(Image("Button")).modifier(Shadow())
                     Spacer()
-                    Text("Score:")
-                    Text(String(score))
+                    Text("Score:").modifier(LabelStyle())
+                    Text(String(score)).modifier(ValueStyle())
                     Spacer()
-                    Text("Round:")
-                    Text(String(round))
+                    Text("Round:").modifier(LabelStyle())
+                    Text(String(round)).modifier(ValueStyle())
                     Spacer()
                     Button(action: {
                         print("Pop-up some info")
                     }) {
-                        Text("Info")
+                        Text("Info").modifier(ButtonSmallTextStyle())
                     }
-                    
+                        .background(Image("Button")).modifier(Shadow())
                 }
                 .padding(.bottom, 20)
             }
+            .background(Image("Background"), alignment: .center)
         }
     }
     

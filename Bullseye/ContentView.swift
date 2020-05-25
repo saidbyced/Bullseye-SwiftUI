@@ -45,9 +45,9 @@ struct ContentView: View {
                 }
                 .alert(isPresented: $alertIsVisible) { () -> Alert in
                     let sliderValueMessage = "The slider's value is \(roundedSliderValue())."
-                    let pointsScoredMessage = "You scored \(self.pointsForCurrentRound()) points this round."
+                    let pointsScoredMessage = "You scored \(hitMeResponse()[1])\(self.pointsForCurrentRound()) points this round."
                     
-                    return Alert(title: Text("Hello there"), message: Text(sliderValueMessage + "\n" + pointsScoredMessage), dismissButton: .default(Text("Awesome!")) {
+                    return Alert(title: Text(hitMeResponse()[0]), message: Text(sliderValueMessage + "\n" + pointsScoredMessage), dismissButton: .default(Text("Ok")) {
                         self.addToScore()
                         self.nextRound()
                         self.randomizeTarget()
@@ -86,8 +86,34 @@ struct ContentView: View {
         Int(sliderValue.rounded())
     }
     
+    func amountOff() -> Int {
+        100 - abs(target - roundedSliderValue())
+    }
+    
     func pointsForCurrentRound() -> Int {
-        return 100 - abs(target - roundedSliderValue())
+        switch amountOff() {
+        case 100:
+            return 200
+        case 99:
+            return 149
+        default:
+            return amountOff()
+        }
+    }
+    
+    func hitMeResponse() -> [String] {
+        switch amountOff() {
+        case 100:
+            return ["Perfect!", "all "]
+        case 99:
+            return ["Just off","a good "]
+        case 95...98:
+            return ["Almost!", ""]
+        case 90...94:
+            return ["Not bad", ""]
+        default:
+            return ["Are you even trying", "only "]
+        }
     }
     
     func addToScore() {
@@ -104,7 +130,8 @@ struct ContentView: View {
     
     func resetEverything() {
         score = 0
-        round = 0
+        round = 1
+        sliderValue = 50.0
         randomizeTarget()
     }
 }

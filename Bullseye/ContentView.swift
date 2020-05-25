@@ -12,15 +12,17 @@ struct ContentView: View {
     
     @State var alertIsVisible: Bool = false
     @State var sliderValue: Double = 50.0
+    @State var target: Int = Int.random(in: 1...100)
     
     var body: some View {
+        
         VStack {
             VStack {
                 Spacer()
                 // Target Row
                 HStack {
                     Text("Put the bullseye as close as you can to:")
-                    Text("100")
+                    Text(String(self.target))
                 }
                 Spacer()
                 
@@ -40,8 +42,11 @@ struct ContentView: View {
                     Text(/*@START_MENU_TOKEN@*/"Hit Me!"/*@END_MENU_TOKEN@*/)
                 }
                 .alert(isPresented: $alertIsVisible) { () -> Alert in
-                    var roundedValue: Int = Int(self.sliderValue.rounded())
-                    return Alert(title: Text("Hello there"), message: Text("The slider's value is \(roundedValue)."), dismissButton: .default(Text("Awesome!")))
+                    let roundedValue: Int = Int(self.sliderValue.rounded())
+                    let sliderValueMessage: String = "The slider's value is \(roundedValue)."
+                    let pointsScoredMessage: String = "You scored \(self.pointsForCurrentRound()) points this round."
+                    
+                    return Alert(title: Text("Hello there"), message: Text(sliderValueMessage + "\n" + pointsScoredMessage), dismissButton: .default(Text("Awesome!")))
                 }
                 Spacer()
                 
@@ -68,6 +73,16 @@ struct ContentView: View {
                 }
                 .padding(.bottom, 20)
             }
+        }
+    }
+    
+    func pointsForCurrentRound() -> Int {
+        if self.sliderValue > Double(self.target) {
+            return Int(Double(self.target) - self.sliderValue)
+        } else if self.sliderValue < Double(self.target){
+            return Int(self.sliderValue - Double(self.target))
+        } else {
+            return 0
         }
     }
 }

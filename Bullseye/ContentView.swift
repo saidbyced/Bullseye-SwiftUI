@@ -74,7 +74,7 @@ struct ContentView: View {
                 
                 // Slider row
                 HStack {
-                    Text("1").modifier(LabelStyle())
+                    Text("1").modifier(LabelStyle()).padding(.leading, 20)
                     Slider(value: $sliderValue, in: 1...100).accentColor(Color.green)
                     Text("100").modifier(LabelStyle())
                 }
@@ -125,8 +125,11 @@ struct ContentView: View {
                             Text("Info").modifier(ButtonSmallTextStyle())
                         }
                     }
-                    .background(Image("Button")).modifier(Shadow())
+                    .background(Image("Button"))
+                    .padding(.trailing, 20.0).modifier(Shadow())
                 }
+                .padding(.leading, 10)
+                .padding(.trailing, 10)
                 .padding(.bottom, 20)
             }
             .background(Image("Background"), alignment: .center)

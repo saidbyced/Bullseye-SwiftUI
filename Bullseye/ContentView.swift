@@ -15,6 +15,7 @@ struct ContentView: View {
     @State var target = Int.random(in: 1...100)
     @State var score = 0
     @State var round = 1
+    let midnightBlue = Color(red: 0.0/255.0, green: 52.0/255.0, blue: 102.0/255.0)
     
     struct Shadow: ViewModifier {
         func body(content: Content) -> some View {
@@ -43,18 +44,11 @@ struct ContentView: View {
         }
     }
     
-    struct ButtonStyle: ViewModifier {
-        func body(content: Content) -> some View {
-            return content
-                .background(Image("Button")).modifier(Shadow())
-        }
-    }
-    
     struct ButtonLargeTextStyle: ViewModifier {
         func body(content: Content) -> some View {
             return content
                 .foregroundColor(Color.black)
-                .font(Font.custom("ArialRoundedMTBold", size: 24))
+                .font(Font.custom("ArialRoundedMTBold", size: 18))
         }
     }
     
@@ -62,7 +56,7 @@ struct ContentView: View {
         func body(content: Content) -> some View {
             return content
                 .foregroundColor(Color.black)
-                .font(Font.custom("ArialRoundedMTBold", size: 18))
+                .font(Font.custom("ArialRoundedMTBold", size: 12))
         }
     }
     
@@ -81,7 +75,7 @@ struct ContentView: View {
                 // Slider row
                 HStack {
                     Text("1").modifier(LabelStyle())
-                    Slider(value: $sliderValue, in: 1...100)
+                    Slider(value: $sliderValue, in: 1...100).accentColor(Color.green)
                     Text("100").modifier(LabelStyle())
                 }
                 Spacer()
@@ -91,7 +85,7 @@ struct ContentView: View {
                     print("Score points")
                     self.alertIsVisible = true
                 }) {
-                    Text(/*@START_MENU_TOKEN@*/"Hit Me!"/*@END_MENU_TOKEN@*/).background(Image("Button")).modifier(Shadow())
+                    Text(/*@START_MENU_TOKEN@*/"Hit Me!"/*@END_MENU_TOKEN@*/).modifier(ButtonLargeTextStyle())
                 }
                 .alert(isPresented: $alertIsVisible) { () -> Alert in
                     let sliderValueMessage = "The slider's value is \(roundedSliderValue())."
@@ -101,9 +95,9 @@ struct ContentView: View {
                         self.addToScore()
                         self.nextRound()
                         self.randomizeTarget()
-                        })
+                    })
                 }
-                    .background(Image("Button")).modifier(Shadow())
+                .background(Image("Button")).modifier(Shadow())
                 Spacer()
                 
                 // Score row
@@ -117,7 +111,7 @@ struct ContentView: View {
                             Text("Start Over").modifier(ButtonSmallTextStyle())
                         }
                     }
-                        .background(Image("Button")).modifier(Shadow())
+                    .background(Image("Button")).modifier(Shadow())
                     Spacer()
                     Text("Score:").modifier(LabelStyle())
                     Text(String(score)).modifier(ValueStyle())
@@ -125,16 +119,19 @@ struct ContentView: View {
                     Text("Round:").modifier(LabelStyle())
                     Text(String(round)).modifier(ValueStyle())
                     Spacer()
-                    Button(action: {
-                        print("Pop-up some info")
-                    }) {
-                        Text("Info").modifier(ButtonSmallTextStyle())
+                    NavigationLink(destination: AboutView()) {
+                        HStack {
+                            Image("InfoIcon")
+                            Text("Info").modifier(ButtonSmallTextStyle())
+                        }
                     }
-                        .background(Image("Button")).modifier(Shadow())
+                    .background(Image("Button")).modifier(Shadow())
                 }
                 .padding(.bottom, 20)
             }
             .background(Image("Background"), alignment: .center)
+            .accentColor(midnightBlue)
+        .navigationBarTitle("Bullseye")
         }
     }
     
